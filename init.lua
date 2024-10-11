@@ -101,6 +101,7 @@ function OnWorldPreUpdate()
 	end
 	nukes.OnWorldPreUpdate();
 	input_delay.OnWorldPreUpdate()
+	Props.OnWorldPreUpdate()
 end
 
 -- Copi was here
