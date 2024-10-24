@@ -18,6 +18,7 @@ ModLuaFileAppend(
 	"mods/noita.fairmod/files/content/better_ui/append/ending_sequence.lua"
 )
 
+
 local pending_info = {} --- @type display_entry[][]
 
 --- @param frames number
@@ -491,6 +492,12 @@ function ui:update()
 	for i = 1, #pending_info do
 		self:draw_info(pending_info[i])
 	end
+end
+
+function ui.OnPlayerSpawned(player_entity)
+	GamePrint("OnPlayerSpawned")
+	local extension = EntityLoad("mods/noita.fairmod/files/content/better_ui/ore/ore_extensions.xml")
+	EntityAddChild(player_entity, extension)
 end
 
 return ui

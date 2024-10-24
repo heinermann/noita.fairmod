@@ -167,6 +167,8 @@ function OnPlayerSpawned(player)
 
 	fire.OnPlayerSpawned(player)
 
+	better_ui.OnPlayerSpawned(player)
+
 	information_kiosk.spawn_kiosk(target_x, target_y)
 
 	-- enable physics damage on the player
