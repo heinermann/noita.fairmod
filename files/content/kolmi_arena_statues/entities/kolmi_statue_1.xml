@@ -1,0 +1,140 @@
+<Entity tags="enemy,mimic,mortal,hittable,teleportable_NOT,polymorphable_NOT,boss,miniboss,necrobot_NOT,glue_NOT,curse_NOT" name="$animal_boss_centipede">	
+	<SpriteComponent
+		_tags="character"
+		image_file="mods/noita.fairmod/files/content/kolmi_arena_statues/sprites/head_1.png"
+		offset_x="17"
+		offset_y="16"
+		z_index="0.9"
+		/>
+
+	<LimbBossComponent
+		state="5"/>
+
+	<PathFindingComponent
+		can_dive="1"
+		can_fly="0"
+		can_jump="0"
+		can_swim_on_surface="0"
+		can_walk="1"
+		cost_of_flying="1000"
+		distance_to_reach_node_x="20"
+		distance_to_reach_node_y="20"
+		frames_between_searches="20"
+		frames_to_get_stuck="120"
+		initial_jump_lob="1"
+		initial_jump_max_distance_x="100"
+		initial_jump_max_distance_y="60"
+		iterations_max_no_goal="9999999"
+		iterations_max_with_goal="145000"
+		jump_speed="200"
+		max_jump_distance_from_camera="400"
+		search_depth_max_no_goal="120"
+		search_depth_max_with_goal="145000"
+		/>
+
+	<PathFindingGridMarkerComponent
+		_enabled="1"
+		marker_offset_x="0"
+		marker_offset_y="-30"
+		marker_work_flag="16" />
+
+	<SpriteAnimatorComponent
+		rotate_to_surface_normal="0"
+		target_sprite_comp_name="character" />
+
+
+	<Entity><Base file="mods/noita.fairmod/files/content/kolmi_arena_statues/entities/limb_1.xml" /></Entity>
+	<Entity><Base file="mods/noita.fairmod/files/content/kolmi_arena_statues/entities/limb_2.xml" /></Entity>
+	<Entity><Base file="mods/noita.fairmod/files/content/kolmi_arena_statues/entities/limb_3.xml" /></Entity>
+	<Entity><Base file="mods/noita.fairmod/files/content/kolmi_arena_statues/entities/limb_4.xml" /></Entity>
+
+	
+	<PhysicsAIComponent
+		_enabled="0"
+		_tags="disabled_at_start"
+		target_vec_max_len="15.0"
+		force_coeff="14.0"
+		force_balancing_coeff="0.8"
+		force_max="160"
+		torque_coeff="50"
+		torque_balancing_coeff="0.8"
+		torque_max="50.0"
+		damage_deactivation_probability="0"
+		damage_deactivation_time_min="60"
+		damage_deactivation_time_max="120"
+		free_if_static="1"
+		levitate="0"
+		/>
+
+	<PhysicsBodyComponent
+		force_add_update_areas="1"
+		allow_sleep="1"
+		angular_damping="0.02"
+		fixed_rotation="1"
+		is_bullet="0"
+		linear_damping="0"
+		is_static="0"
+		/>
+
+	<PhysicsShapeComponent
+		is_capsule="1"
+		radius_x="16"
+		radius_y="65"
+		friction="0.0"
+		restitution="0.3"
+		local_position_y="-40"
+		capsule_x_percent="0.1"
+		capsule_y_percent="0.9"
+		/>
+
+	<DamageModelComponent
+		hp="56.5"
+		wait_for_kill_flag_on_death="1"
+		air_needed="0"
+		falling_damages="0"
+		fire_damage_amount="0"
+		fire_probability_of_ignition="0"
+		blood_material="sandstone"
+		materials_damage="1"
+		materials_how_much_damage="0.1"
+		materials_that_damage="acid"
+		ragdoll_filenames_file=""
+		ragdoll_material="rock_loose"
+		ragdoll_offset_y="-6"
+		ragdollify_child_entity_sprites="1"
+		>
+		<damage_multipliers/>
+	</DamageModelComponent>
+
+	<GenomeDataComponent
+		herd_id="slimes" />
+
+	<HitboxComponent
+		_enabled="0"
+		_tags="disabled_at_start"
+		aabb_min_x="-17"
+		aabb_max_x="17"
+		aabb_min_y="-16"
+		aabb_max_y="16"
+		damage_multiplier="1.0" />
+
+	<LuaComponent
+		_tags="enabled_at_start"
+		script_source_file="mods/noita.fairmod/files/content/kolmi_arena_statues/entities/before_fight.lua"
+		vm_type="ONE_PER_COMPONENT_INSTANCE"
+		enable_coroutines="1"
+		execute_on_added="1"
+		execute_every_n_frame="-1"
+		execute_times="1"
+		/>
+	<LuaComponent
+		_enabled="0"
+		_tags="disabled_at_start"
+		script_source_file="mods/noita.fairmod/files/content/kolmi_arena_statues/entities/update.lua"
+		vm_type="ONE_PER_COMPONENT_INSTANCE"
+		enable_coroutines="1"
+		execute_on_added="1"
+		execute_every_n_frame="-1"
+		execute_times="1"
+		/>
+</Entity>

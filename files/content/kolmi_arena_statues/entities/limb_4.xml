@@ -1,0 +1,50 @@
+<Entity tags="foot,limb_4">
+	<InheritTransformComponent>
+		<Transform
+			position.x="8"
+			position.y="11"
+			/>
+	</InheritTransformComponent>
+
+	<IKLimbWalkerComponent
+		_enabled="0"
+		_tags="disabled_at_start,limb_4_walker,limb_walker"
+		ground_attachment_min_spread="4"
+		ground_attachment_max_angle="0.5"
+		ground_attachment_ray_length_coeff="1.15"
+		affect_flying="1"
+		mState="1"
+		ground_attachment_max_tries="20"
+		/>
+
+	<IKLimbComponent
+		_tags="limb_4_limb,limb"
+		length="64"
+		thigh_extra_lenght="6"
+		/>
+
+	<SpriteComponent 
+		image_file="mods/noita.fairmod/files/content/kolmi_arena_statues/sprites/limb_4_thigh.png" 
+		z_index="1.2"
+		offset_x="2"
+		offset_y="7"
+		update_transform="0"
+		update_transform_rotation="0" />
+
+	<SpriteComponent 
+		image_file="mods/noita.fairmod/files/content/kolmi_arena_statues/sprites/limb_4_leg.png" 
+		z_index="1.2"
+		offset_x="1"
+		offset_y="8"
+		update_transform="0"
+		update_transform_rotation="0" />
+
+	<!--SpriteComponent 
+		image_file="data/entities/animals/boss_centipede/limbs/limb_long_knee.xml" 
+		z_index="1.1"
+		offset_x="8"
+		offset_y="8"
+		update_transform="0"
+		update_transform_rotation="0" >
+	</SpriteComponent-->
+</Entity>
