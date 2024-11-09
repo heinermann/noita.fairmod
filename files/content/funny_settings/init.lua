@@ -1,3 +1,7 @@
+local nxml = dofile_once("mods/noita.fairmod/files/lib/nxml.lua") --- @type nxml
+dofile_once("mods/noita.fairmod/files/scripts/utils/utilities.lua")
+
+
 local function escape(str)
 	return str:gsub("[%(%)%.%%%+%-%*%?%[%^%$%]]", "%%%1")
 end
@@ -66,6 +70,36 @@ shader_append(
 ]]
 )
 
+local function invert_value(cell, name, default_value)
+	if default_value == nil then
+		local value = cell:get(name)
+		if value ~= nil then
+			cell:set(name, -tonumber(value))
+		end
+	else
+		cell:set(name, -tonumber(cell:get(name) or tostring(default_value)))
+	end
+end
+
+if ModSettingGet("noita.fairmod.invert_y_axis") then
+	for xml in nxml.edit_file("data/materials.xml") do
+		for cell in xml:each_of("CellData") do
+			invert_value(cell, "solid_gravity_scale", 1)
+			invert_value(cell, "liquid_gravity", 0.5)
+			cell:set("gas_upwards_speed", 10)
+			cell:set("gas_downwards_speed", 100)
+		end
+
+		for cell in xml:each_of("CellDataChild") do
+			invert_value(cell, "solid_gravity_scale")
+			invert_value(cell, "liquid_gravity")
+			cell:set("gas_upwards_speed", 10)
+			cell:set("gas_downwards_speed", 100)
+		end
+
+	end
+end
+
 local module = {}
 
 module.OnPausedChanged = function()
@@ -108,6 +142,76 @@ module.OnPlayerSpawned = function(player)
 		execute_every_n_frame = 1,
 		execute_on_added = true,
 	})
+end
+
+local function add_component_to_entity(entity)
+	if EntityHasTag(entity, "invert_y_tracked") then return end
+
+	EntityAddTag(entity, "invert_y_tracked")
+	EntityAddComponent2(entity, "LuaComponent", {
+		script_source_file = "mods/noita.fairmod/files/content/funny_settings/scripts/y_inverter.lua",
+		execute_every_n_frame = 1,
+		execute_on_added = true,
+	})
+end
+
+module.OnWorldPreUpdate = function()
+	if GameGetFrameNum() % 30 == 0 then
+		local x, y = GameGetCameraPos()
+		local entities = EntityGetInRadius(x, y, 512)
+
+		for _, entity in ipairs(entities) do
+			add_component_to_entity(entity)
+		end
+	end
+
+	if ModSettingGet("noita.fairmod.invert_y_axis") then
+		local player = GetPlayers()[1]
+
+		if player ~= nil then
+			local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
+			if controls ~= nil then
+				local mButtonDownUp = ComponentGetValue2(controls, "mButtonDownUp")
+				local mButtonFrameUp = ComponentGetValue2(controls, "mButtonFrameUp")
+				local mButtonDownDown = ComponentGetValue2(controls, "mButtonDownDown")
+				local mButtonFrameDown = ComponentGetValue2(controls, "mButtonFrameDown")
+				local mFlyingTargetY = ComponentGetValue2(controls, "mFlyingTargetY")
+				local mJumpVelocity_x, mJumpVelocity_y = ComponentGetValue2(controls, "mJumpVelocity")
+
+				ComponentSetValue2(controls, "mButtonDownUp", mButtonDownDown)
+				ComponentSetValue2(controls, "mButtonFrameUp", mButtonFrameDown)
+				ComponentSetValue2(controls, "mButtonDownDown", mButtonDownUp)
+				ComponentSetValue2(controls, "mButtonFrameDown", mButtonFrameUp)
+				ComponentSetValue2(controls, "mFlyingTargetY", -mFlyingTargetY)
+				ComponentSetValue2(controls, "mJumpVelocity", mJumpVelocity_x, -mJumpVelocity_y)
+
+				local cam_x, cam_y, cam_w, cam_h = GameGetCameraBounds()
+
+				local x, y = ComponentGetValue2(controls, "mMousePosition")
+				local rel_y = y - cam_y
+				ComponentSetValue2(controls, "mMousePosition", x, cam_y + cam_h - rel_y)
+
+				x, y = ComponentGetValue2(controls, "mMousePositionRaw")
+				ComponentSetValue2(controls, "mMousePositionRaw", x, 720 - y)
+				x, y = ComponentGetValue2(controls, "mMousePositionRawPrev")
+				ComponentSetValue2(controls, "mMousePositionRawPrev", x, 720 - y)
+
+				x, y = ComponentGetValue2(controls, "mMouseDelta")
+				ComponentSetValue2(controls, "mMouseDelta", x, -y)
+
+			end
+		end
+
+		local cam_x, cam_y, cam_w, cam_h = GameGetCameraBounds()
+		local bodies = PhysicsBodyIDQueryBodies(cam_x, cam_y, cam_x + cam_w, cam_y + cam_h, true, true)
+		for _, body in ipairs(bodies) do
+			local gravity = PhysicsBodyIDGetGravityScale(body)
+			if gravity > 0 then
+				print_error(tostring(gravity))
+				PhysicsBodyIDSetGravityScale(body, -gravity)
+			end
+		end
+	end
 end
 
 return module

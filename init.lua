@@ -117,6 +117,10 @@ ModLuaFileAppend( "data/scripts/projectiles/all_spells_stage.lua", "mods/noita.f
 imgui = load_imgui and load_imgui({ mod = "noita.fairmod", version = "1.0.0" })
 
 ModMagicNumbersFileAdd("mods/noita.fairmod/files/magic_numbers.xml")
+if ModSettingGet("noita.fairmod.invert_y_axis") then
+	ModMagicNumbersFileAdd("mods/noita.fairmod/files/magic_numbers_invert_y.xml")
+end
+
 
 --- I hate doing things without a hook
 function OnModPostInit()
@@ -292,6 +296,7 @@ function OnWorldPreUpdate()
 	snail_radar.update()
 
 	gamblecore.Update()
+	funny_settings.OnWorldPreUpdate()
 
 	if GameHasFlagRun("ending_game_completed") and not GameHasFlagRun("incremented_win_count") then
 		GameAddFlagRun("incremented_win_count")
@@ -300,7 +305,10 @@ function OnWorldPreUpdate()
 	end
 end
 
-function OnWorldPostUpdate() end
+function OnWorldPostUpdate()
+	funny_settings.OnWorldPreUpdate()
+
+end
 
 local time_paused = 0
 local last_pause_was_inventory = false

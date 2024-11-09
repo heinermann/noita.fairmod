@@ -1,0 +1,8 @@
+<!--
+	_DEBUG_DONT_SAVE_MAGIC_NUMBERS: So the magic numbers don't get saved on noita_dev.exe
+-->
+
+<MagicNumbers
+	_DEBUG_DONT_SAVE_MAGIC_NUMBERS="1"
+  RENDER_FIRE_GRAVITY="160"
+  />
