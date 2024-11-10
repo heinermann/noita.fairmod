@@ -99,22 +99,23 @@ local function invert_value(cell, name, default_value)
 	end
 end
 
+
+local material_files = {
+	"data/materials.xml",
+	"mods/noita.fairmod/files/content/entrance_cart/bouncy_metal.xml"
+}
+
 if ModSettingGet("noita.fairmod.invert_y_axis") then
-	for xml in nxml.edit_file("data/materials.xml") do
-		for cell in xml:each_of("CellData") do
-			invert_value(cell, "solid_gravity_scale", 1)
-			invert_value(cell, "liquid_gravity", 0.5)
-			cell:set("gas_upwards_speed", 10)
-			cell:set("gas_downwards_speed", 200)
-		end
+	for _, mat_file in ipairs(material_files) do
+		for xml in nxml.edit_file(mat_file) do
+			for cell in xml:each_of("CellData") do
+				invert_value(cell, "solid_gravity_scale", 1)
+			end
 
-		for cell in xml:each_of("CellDataChild") do
-			invert_value(cell, "solid_gravity_scale")
-			invert_value(cell, "liquid_gravity")
-			cell:set("gas_upwards_speed", 10)
-			cell:set("gas_downwards_speed", 200)
+			for cell in xml:each_of("CellDataChild") do
+				invert_value(cell, "solid_gravity_scale")
+			end
 		end
-
 	end
 end
 

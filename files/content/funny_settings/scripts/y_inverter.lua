@@ -56,7 +56,7 @@ local function invert_component_gravity(entity, comp, adding)
 		--ComponentSetValue2(comp, "velocity_min_y", vel_max_y)
 		--ComponentSetValue2(comp, "velocity_max_y", vel_min_y)
 	elseif comp_name == "PhysicsBodyComponent" then
-		--invert_component_value(comp, "gravity_scale_if_has_no_image_shapes")
+		ComponentSetValue2(comp, "gravity_scale_if_has_no_image_shapes", -ComponentGetValue2(comp, "gravity_scale_if_has_no_image_shapes") - 1)
 
 		--local mBodyId = ComponentGetValue2(comp, "mBodyId")
 		--PhysicsBodyIDSetGravityScale(mBodyId, -PhysicsBodyIDGetGravityScale(mBodyId))
@@ -128,8 +128,6 @@ if want_y_inverted then
 				ComponentSetValue2(comp, "mLastFrameOnGround", GameGetFrameNum())
 			else
 				if ComponentGetValue2(comp, "mLastFrameOnGround") == GameGetFrameNum() then
-					GamePrint("F")
-
 					local vx, vy = ComponentGetValue2(comp, "mVelocity")
 					ComponentSetValue2(comp, "mVelocity", vx, -9.8)
 				end
