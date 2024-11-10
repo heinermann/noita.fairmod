@@ -1,4 +1,4 @@
-<Entity tags="enemy,mimic,mortal,hittable,teleportable_NOT,polymorphable_NOT,boss,miniboss,necrobot_NOT,glue_NOT,curse_NOT" name="$animal_boss_centipede">	
+<Entity tags="enemy,mimic,do_not_evil,mortal,hittable,teleportable_NOT,polymorphable_NOT,boss,miniboss,necrobot_NOT,glue_NOT,curse_NOT" name="$animal_boss_centipede">	
 	<SpriteComponent
 		_tags="character"
 		image_file="mods/noita.fairmod/files/content/kolmi_arena_statues/sprites/head_1.png"
@@ -7,6 +7,14 @@
 		z_index="0.9"
 		/>
 
+	<!--
+		MoveAroundNest = 0,
+		FollowPlayer = 1,
+		Escape = 2,
+		DontMove = 3,
+		MoveTo = 4,
+		MoveDirectlyTowardsPlayer = 5,	
+	-->
 	<LimbBossComponent
 		state="5"/>
 
@@ -50,7 +58,7 @@
 
 	
 	<PhysicsAIComponent
-		_enabled="0"
+		_enabled="1"
 		_tags="disabled_at_start"
 		target_vec_max_len="15.0"
 		force_coeff="14.0"
