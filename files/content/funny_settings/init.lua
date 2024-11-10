@@ -6,9 +6,7 @@ local function escape(str)
 	return str:gsub("[%(%)%.%%%+%-%*%?%[%^%$%]]", "%%%1")
 end
 
-local shader_append = function(find, append)
-	local path = "data/shaders/post_final.frag"
-
+local shader_append = function(path, find, append)
 	-- add to next line
 	local file = ModTextFileGetContent(path)
 	local pos = string.find(file, escape(find))
@@ -22,7 +20,7 @@ local shader_append = function(find, append)
 	end
 end
 
-shader_append(
+shader_append("data/shaders/post_final.frag",
 	"varying vec2 tex_coord_fogofwar;",
 	[[
 uniform vec4 COLORBLIND_MODE_ON;
@@ -32,7 +30,17 @@ uniform vec4 _8_BIT_COLOR_ON;
 	]]
 )
 
-shader_append(
+shader_append("data/shaders/post_final.vert",
+	"varying vec2 tex_coord_fogofwar;",
+	[[
+uniform vec4 COLORBLIND_MODE_ON;
+uniform vec4 INVERT_Y_AXIS_ON;
+uniform vec4 LOWER_RESOLUTION_RENDERING_ON;
+uniform vec4 _8_BIT_COLOR_ON;
+	]]
+)
+
+shader_append("data/shaders/post_final.frag",
 	"gl_FragColor.a = 1.0;",
 	[[
 	if(COLORBLIND_MODE_ON.x == 1.0) {
@@ -51,12 +59,9 @@ shader_append(
 ]]
 )
 
-shader_append(
+shader_append("data/shaders/post_final.frag",
 	"vec2 tex_coord_glow = tex_coord_glow_;",
 	[[
-	if(INVERT_Y_AXIS_ON.x == 1.0) {
-		tex_coord = vec2(tex_coord.x, 1.0 - tex_coord.y);
-	}
 	if(LOWER_RESOLUTION_RENDERING_ON.x == 1.0) {
 
 		float resolution_factor = 0.5;
@@ -69,6 +74,19 @@ shader_append(
 	}
 ]]
 )
+
+shader_append("data/shaders/post_final.vert",
+	"world_pos = camera_pos + tex_coord_y_inverted_ * world_viewport_size;",
+	[[
+	if(INVERT_Y_AXIS_ON.x == 1.0) {
+		tex_coord_ = vec2(tex_coord_.x, 1.0 - tex_coord_.y);
+		tex_coord_y_inverted_ = vec2(tex_coord_y_inverted_.x, 1.0 - tex_coord_y_inverted_.y);
+		tex_coord_glow_ = vec2(tex_coord_glow_.x, 1.0 - tex_coord_glow_.y);
+		world_pos = camera_pos + vec2(tex_coord_y_inverted_.x, 1.0 - tex_coord_y_inverted_.y) * world_viewport_size;
+	}
+]]
+)
+
 
 local function invert_value(cell, name, default_value)
 	if default_value == nil then
@@ -87,14 +105,14 @@ if ModSettingGet("noita.fairmod.invert_y_axis") then
 			invert_value(cell, "solid_gravity_scale", 1)
 			invert_value(cell, "liquid_gravity", 0.5)
 			cell:set("gas_upwards_speed", 10)
-			cell:set("gas_downwards_speed", 100)
+			cell:set("gas_downwards_speed", 200)
 		end
 
 		for cell in xml:each_of("CellDataChild") do
 			invert_value(cell, "solid_gravity_scale")
 			invert_value(cell, "liquid_gravity")
 			cell:set("gas_upwards_speed", 10)
-			cell:set("gas_downwards_speed", 100)
+			cell:set("gas_downwards_speed", 200)
 		end
 
 	end
@@ -166,51 +184,16 @@ module.OnWorldPreUpdate = function()
 	end
 
 	if ModSettingGet("noita.fairmod.invert_y_axis") then
-		local player = GetPlayers()[1]
-
-		if player ~= nil then
-			local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
-			if controls ~= nil then
-				local mButtonDownUp = ComponentGetValue2(controls, "mButtonDownUp")
-				local mButtonFrameUp = ComponentGetValue2(controls, "mButtonFrameUp")
-				local mButtonDownDown = ComponentGetValue2(controls, "mButtonDownDown")
-				local mButtonFrameDown = ComponentGetValue2(controls, "mButtonFrameDown")
-				local mFlyingTargetY = ComponentGetValue2(controls, "mFlyingTargetY")
-				local mJumpVelocity_x, mJumpVelocity_y = ComponentGetValue2(controls, "mJumpVelocity")
-
-				ComponentSetValue2(controls, "mButtonDownUp", mButtonDownDown)
-				ComponentSetValue2(controls, "mButtonFrameUp", mButtonFrameDown)
-				ComponentSetValue2(controls, "mButtonDownDown", mButtonDownUp)
-				ComponentSetValue2(controls, "mButtonFrameDown", mButtonFrameUp)
-				ComponentSetValue2(controls, "mFlyingTargetY", -mFlyingTargetY)
-				ComponentSetValue2(controls, "mJumpVelocity", mJumpVelocity_x, -mJumpVelocity_y)
-
-				local cam_x, cam_y, cam_w, cam_h = GameGetCameraBounds()
-
-				local x, y = ComponentGetValue2(controls, "mMousePosition")
-				local rel_y = y - cam_y
-				ComponentSetValue2(controls, "mMousePosition", x, cam_y + cam_h - rel_y)
-
-				x, y = ComponentGetValue2(controls, "mMousePositionRaw")
-				ComponentSetValue2(controls, "mMousePositionRaw", x, 720 - y)
-				x, y = ComponentGetValue2(controls, "mMousePositionRawPrev")
-				ComponentSetValue2(controls, "mMousePositionRawPrev", x, 720 - y)
-
-				x, y = ComponentGetValue2(controls, "mMouseDelta")
-				ComponentSetValue2(controls, "mMouseDelta", x, -y)
-
-			end
-		end
-
 		local cam_x, cam_y, cam_w, cam_h = GameGetCameraBounds()
+
 		local bodies = PhysicsBodyIDQueryBodies(cam_x, cam_y, cam_x + cam_w, cam_y + cam_h, true, true)
 		for _, body in ipairs(bodies) do
 			local gravity = PhysicsBodyIDGetGravityScale(body)
 			if gravity > 0 then
-				print_error(tostring(gravity))
 				PhysicsBodyIDSetGravityScale(body, -gravity)
 			end
 		end
+	else
 	end
 end
 
