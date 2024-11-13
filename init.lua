@@ -164,8 +164,14 @@ function OnPlayerSpawned(player)
 	GameRemoveFlagRun("draw_evil_mode_text")
 	GameRemoveFlagRun("fairmod_dialog_interacting")
 	GameRemoveFlagRun("fairmod_scratch_interacting")
+	GameAddFlagRun("fairmod_developer_mode")
 
 	local x, y = EntityGetTransform(player)
+
+	local dmg = EntityGetFirstComponentIncludingDisabled(player, "DamageModelComponent")
+	ComponentSetValue2(dmg, "max_hp", 99999)
+	ComponentSetValue2(dmg, "hp", 99999)
+	ComponentSetValue2(dmg, "invincibility_frames", 99999999999)
 
 	-- move player to a random parallel world.
 

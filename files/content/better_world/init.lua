@@ -8,6 +8,9 @@ local markers = dofile_once("mods/noita.fairmod/files/content/better_world/map_h
 
 local nxml = dofile("mods/noita.fairmod/files/lib/nxml.lua") --- @type nxml
 
+local world_util = dofile_once("mods/noita.fairmod/files/content/better_world/world_utils.lua")
+world_util.relocate_pixel_scenes("data/biome_impl/biome_map.png", "mods/noita.fairmod/files/content/better_world/better_world.png")
+
 local nil_pos = {x = 0, y = 0} --default thing so i dont have to keep writing this out
 
 --ModLuaFileAppend("data/scripts/biome_scripts.lua", "mods/noita.fairmod/files/content/better_world/biome_functions_append.lua")
