@@ -105,19 +105,79 @@ local material_files = {
 	"mods/noita.fairmod/files/content/entrance_cart/bouncy_metal.xml"
 }
 
-if ModSettingGet("noita.fairmod.invert_y_axis") then
-	for _, mat_file in ipairs(material_files) do
-		for xml in nxml.edit_file(mat_file) do
-			for cell in xml:each_of("CellData") do
-				invert_value(cell, "solid_gravity_scale", 1)
-			end
 
-			for cell in xml:each_of("CellDataChild") do
-				invert_value(cell, "solid_gravity_scale")
+local box2d_mats = {}
+for _, mat_file in ipairs(material_files) do
+	for xml in nxml.edit_file(mat_file) do
+		for cell in xml:each_of("CellData") do
+			if (cell:get("tags") or ""):match("%[box2d%]") then
+				box2d_mats[cell:get("name")] = 1
+			end
+		end
+
+		for cell in xml:each_of("CellDataChild") do
+			if cell:get("tags") == nil then
+				if box2d_mats[cell:get("_parent")] then
+					box2d_mats[cell:get("name")] = 1
+				end
+			elseif cell:get("tags"):match("%[box2d%]") then
+				box2d_mats[cell:get("name")] = 1
 			end
 		end
 	end
 end
+
+-- Create inverted materials
+local wang_color = 0xfe3b5e00
+local function next_wang()
+	wang_color = wang_color + 1
+	return string.format("%08x", wang_color)
+end
+
+for _, mat_file in ipairs(material_files) do
+	for xml in nxml.edit_file(mat_file) do
+		for cell in xml:each_of("CellData") do
+			if box2d_mats[cell:get("name")] then
+				xml:add_child(nxml.new_element("CellDataChild", {
+					_parent = cell:get("name"),
+					_inherit_reactions = 1,
+					name = cell:get("name") .. "_fairmod_inverted",
+					ui_name = cell:get("ui_name"),
+					wang_color = next_wang(),
+					solid_gravity_scale = -tonumber(cell:get("solid_gravity_scale") or "1")
+				}))
+			end
+		end
+
+		for cell in xml:each_of("CellDataChild") do
+			if box2d_mats[cell:get("name")] then
+				xml:add_child(nxml.new_element("CellDataChild", {
+					_parent = cell:get("name"),
+					_inherit_reactions = 1,
+					name = cell:get("name") .. "_fairmod_inverted",
+					ui_name = cell:get("ui_name"),
+					wang_color = next_wang(),
+					solid_gravity_scale = -tonumber(cell:get("solid_gravity_scale") or "1")
+				}))
+			end
+		end
+	end
+end
+
+local material_id_cache_initialized = false
+local material_id_invert_cache = {}
+
+local function initialize_material_id_cache()
+	if material_id_cache_initialized then return end
+
+	for mat_name,_ in pairs(box2d_mats) do
+		local id = CellFactory_GetType(mat_name)
+		local id_inverted = CellFactory_GetType(mat_name .. "_fairmod_inverted")
+
+		material_id_invert_cache[id] = id_inverted
+	end
+end
+
 
 local module = {}
 
@@ -152,6 +212,7 @@ module.OnPausedChanged = function()
 end
 
 module.OnPlayerSpawned = function(player)
+	initialize_material_id_cache()
 	module.OnPausedChanged()
 
 	if GameHasFlagRun("fairmod_init") then return end
@@ -174,6 +235,7 @@ local function add_component_to_entity(entity)
 	})
 end
 
+local last_y_setting = nil
 module.OnWorldPreUpdate = function()
 	if GameGetFrameNum() % 30 == 0 then
 		local x, y = GameGetCameraPos()
@@ -184,7 +246,20 @@ module.OnWorldPreUpdate = function()
 		end
 	end
 
-	if ModSettingGet("noita.fairmod.invert_y_axis") then
+	local new_y_setting = ModSettingGet("noita.fairmod.invert_y_axis")
+	if new_y_setting ~= last_y_setting then
+		last_y_setting = new_y_setting
+
+		for id, inverted_id in pairs(material_id_invert_cache) do
+			if new_y_setting then
+				ConvertMaterialEverywhere(id, inverted_id)
+			else
+				ConvertMaterialEverywhere(inverted_id, id)
+			end
+		end
+	end
+
+	if new_y_setting then
 		local cam_x, cam_y, cam_w, cam_h = GameGetCameraBounds()
 
 		local bodies = PhysicsBodyIDQueryBodies(cam_x, cam_y, cam_x + cam_w, cam_y + cam_h, true, true)
@@ -194,7 +269,6 @@ module.OnWorldPreUpdate = function()
 				PhysicsBodyIDSetGravityScale(body, -gravity)
 			end
 		end
-	else
 	end
 end
 
