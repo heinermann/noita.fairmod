@@ -1,0 +1,100 @@
+<Materials>
+	<CellDataChild
+		_parent="oil"
+		_inherit_reactions="1"
+		name="fairmod_otherworld_crude_oil"
+		ui_name="$fairmod_factorio_mat_crude-oil"
+		density="7"
+		cell_type="liquid"
+		wang_color="FFE8BE00"
+		>
+		<Graphics color="FF080808" />
+	</CellDataChild>
+	<CellDataChild
+		_parent="oil"
+		_inherit_reactions="1"
+		name="fairmod_otherworld_heavy_oil"
+		ui_name="$fairmod_factorio_mat_heavy-oil"
+		density="10"
+		cell_type="liquid"
+		wang_color="FFE8BE01"
+		>
+		<Graphics color="FF802100" />
+	</CellDataChild>
+	<CellDataChild
+		_parent="oil"
+		_inherit_reactions="1"
+		name="fairmod_otherworld_light_oil"
+		ui_name="$fairmod_factorio_mat_light-oil"
+		density="3"
+		cell_type="liquid"
+		wang_color="FFE8BE02"
+		>
+		<Graphics color="FF915400" />
+	</CellDataChild>
+
+
+	<CellData
+		name="fairmod_otherworld_automation_science"
+		ui_name="$fairmod_factorio_item_automation-science-pack"
+		tags="[liquid],[liquid_common],[chaotic_transmutation]"
+		density="1"
+		cell_type="liquid"
+		wang_color="FFE8BE03"
+		electrical_conductivity="1"
+		show_in_creative_mode="1"
+		>
+		<Graphics color="DDed4140" />
+	</CellData>
+
+	<CellDataChild
+		_parent="fairmod_otherworld_automation_science"
+		_inherit_reactions="1"
+		name="fairmod_otherworld_logistic_science"
+		ui_name="$fairmod_factorio_item_logistic-science-pack"
+		wang_color="FFE8BE04"
+	>
+		<Graphics color="DD54f262" />
+	</CellDataChild>
+
+	<CellDataChild
+		_parent="fairmod_otherworld_automation_science"
+		_inherit_reactions="1"
+		name="fairmod_otherworld_production_science"
+		ui_name="$fairmod_factorio_item_production-science-pack"
+		wang_color="FFE8BE05"
+	>
+		<Graphics color="DDdf3ef0" />
+	</CellDataChild>
+
+	<CellDataChild
+		_parent="fairmod_otherworld_automation_science"
+		_inherit_reactions="1"
+		name="fairmod_otherworld_military_science"
+		ui_name="$fairmod_factorio_item_military-science-pack"
+		wang_color="FFE8BE06"
+	>
+		<Graphics color="DD868da3" />
+	</CellDataChild>
+
+	<CellDataChild
+		_parent="fairmod_otherworld_automation_science"
+		_inherit_reactions="1"
+		name="fairmod_otherworld_space_science"
+		ui_name="$fairmod_factorio_item_space-science-pack"
+		wang_color="FFE8BE07"
+	>
+		<Graphics color="DDeeeeee" />
+	</CellDataChild>
+
+	<CellDataChild
+		_parent="fairmod_otherworld_automation_science"
+		_inherit_reactions="1"
+		name="fairmod_otherworld_utility_science"
+		ui_name="$fairmod_factorio_item_utility-science-pack"
+		wang_color="FFE8BE08"
+	>
+		<Graphics color="DDeecd55" />
+	</CellDataChild>
+
+</Materials>

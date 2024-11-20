@@ -26,11 +26,11 @@
 		name="interact"
 	/>
 
-	<!--LuaComponent
+	<LuaComponent
 		script_interacting="mods/noita.fairmod/files/content/otherworld_shop/shop_interact.lua"
 		script_source_file="mods/noita.fairmod/files/content/otherworld_shop/shop_interact.lua"
 		execute_every_n_frame="1"
 		enable_coroutines="1"
 		execute_on_added="1"
-	/-->
+	/>
 </Entity>
