@@ -3,8 +3,8 @@ local nxml = dofile_once("mods/noita.fairmod/files/lib/nxml.lua")
 
 
 ModLuaFileAppend("data/scripts/perks/perk_list.lua", "mods/noita.fairmod/files/content/better_perks/append.lua")
-ModLuaFileAppend("data/scripts/perks/attract_items.lua", "mods/noita.fairmod/files/content/better_perks/extend_attract_items.lua")
-ModLuaFileAppend("data/entities/animals/boss_centipede/rewards/spawn_rewards.lua", "mods/noita.fairmod/files/content/better_perks/extend_spawn_rewards.lua")
+ModLuaFileAppend("data/scripts/perks/attract_items.lua", "mods/noita.fairmod/files/content/better_perks/attract_gold/extend_attract_items.lua")
+ModLuaFileAppend("data/entities/animals/boss_centipede/rewards/spawn_rewards.lua", "mods/noita.fairmod/files/content/better_perks/attract_gold/extend_spawn_rewards.lua")
 
 
 for xml in nxml.edit_file("data/entities/misc/greed_curse/greed.xml") do
@@ -90,3 +90,16 @@ for xml in nxml.edit_file("data/entities/misc/material_converter_freeze.xml") do
 		radius="72",
 	})
 end
+
+-- Breathless
+for xml in nxml.edit_file("data/entities/misc/effect_breath_underwater.xml") do
+	local game_effect = xml:first_of("GameEffectComponent")
+	if game_effect ~= nil then
+		xml:remove_child(game_effect)
+	end
+
+	xml:create_child("LuaComponent", {
+		script_source_file = "mods/noita.fairmod/files/content/better_perks/breathless/breath.lua"
+	})
+end
+
