@@ -131,6 +131,7 @@ dofile_once("mods/noita.fairmod/files/content/no_easy_ti/init.lua")
 dofile_once("mods/noita.fairmod/files/content/better_perks/init.lua")
 dofile_once("mods/noita.fairmod/files/content/better_bosses/init.lua")
 dofile_once("mods/noita.fairmod/files/content/no_comma_more_shuffle/init.lua")
+dofile_once("mods/noita.fairmod/files/content/no_comma_more_knockback/init.lua")
 dofile_once("mods/noita.fairmod/files/content/evil_nuggets/init.lua")
 dofile_once("mods/noita.fairmod/files/content/anything_mimics/init.lua")
 
