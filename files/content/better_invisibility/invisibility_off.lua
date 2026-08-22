@@ -1,4 +1,5 @@
 local entity = GetUpdatedEntityID()
+local root = EntityGetRootEntity(entity)
 
 local function get_all_sprites(entity)
 	local result = {}
@@ -38,7 +39,7 @@ local function get_all_sprites(entity)
 end
 
 
-local sprites = get_all_sprites(EntityGetRootEntity(entity))
+local sprites = get_all_sprites(root)
 
 for _, sprite in ipairs(sprites) do
 	if(ComponentHasTag(sprite[2], "bi_invisibility"))then
@@ -65,5 +66,12 @@ for _, sprite in ipairs(sprites) do
 		end
 
 		ComponentRemoveTag(sprite[2], "bi_invisibility")
+	end
+end
+
+if EntityHasTag(root, "player_unit") then
+	local char_data = EntityGetFirstComponent(root, "CharacterDataComponent")
+	if char_data ~= nil then
+		ComponentSetValue2(char_data, "effect_hit_ground", true)
 	end
 end

@@ -41,7 +41,7 @@ local function get_all_sprites(entity)
 	return result
 end
 
-local sprites = get_all_sprites(EntityGetRootEntity(entity))
+local sprites = get_all_sprites(root)
 
 for _, sprite in ipairs(sprites) do
 	if(ComponentGetTypeName(sprite[2]) == "SpriteComponent")then
@@ -78,7 +78,7 @@ for _, sprite in ipairs(sprites) do
 
 		local camera_x, camera_y = GameGetCameraPos()
 		local lerp_speed = 0.01
-		
+
 		local dx = x - camera_x
 		local dy = y - camera_y
 
@@ -90,12 +90,11 @@ for _, sprite in ipairs(sprites) do
 		ComponentAddTag(sprite[2], "bi_invisibility")
 	end
 
-
-
-
 end
 
-
-
-
-
+if EntityHasTag(root, "player_unit") then
+	local char_data = EntityGetFirstComponent(root, "CharacterDataComponent")
+	if char_data ~= nil then
+		ComponentSetValue2(char_data, "effect_hit_ground", false)
+	end
+end
